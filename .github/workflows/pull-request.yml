@@ -1,0 +1,45 @@
+name: Automerge
+on:
+  pull_request:
+    types:
+      - labeled
+      - unlabeled
+      - synchronize
+      - opened
+      - edited
+      - ready_for_review
+      - reopened
+      - unlocked
+    branches: [ master ]
+  jobs:
+    job1:
+      name: Pruebas
+      runs-on: ubuntu-latest
+      steps:
+      - name: Checkout de repositorio
+        uses: actions/checkout@v2
+      - name: Configuración de entorno de python
+        uses: actions/setup-python@v2
+        with:
+            python-version: '3.7'
+      - name: Instalación de librerías y dependencias
+        run: |
+          pip3 install -r requirements.txt
+      - name: Correr pruebas
+        id: correr-pruebas
+        run: python -m unittest -v tests/test_persona2.py
+      - name: Cálculo de cubrimiento
+        id: cubrimiento
+        run: |
+            coverage run -m unittest tests/test_persona2.py
+            coverage report -m
+  automerge:
+    name: Automerge
+    needs: job1
+    runs-on: ubuntu-latest
+    steps:
+      - name: automerge
+        uses: "pascalgn/automerge-action@4536e8847eb62fe2f0ee52c8fa92d17aa97f932f"
+        env:
+          GITHUB_TOKEN: "${{ secrets.GITHUB_TOKEN }}"
+          MERGE_LABELS: ""
