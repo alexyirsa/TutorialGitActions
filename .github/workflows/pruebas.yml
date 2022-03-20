@@ -13,6 +13,16 @@ jobs:
       uses: actions/setup-python@v2
       with:
           python-version: '3.7'
+    - name: Instalación de librerías y dependencias
+      run: |
+        python3 -m pip3 install --upgrade pip3
+        pip3 install -r requirements.txt
     - name: Correr pruebas
       id: correr-pruebas
       run: python3 -m unittest -v tests/test_persona2.py
+    - name: Coverage
+      id: correr-coverage
+      run: |
+        coverage run -m unittest discover -s tests -v
+        coverage report -m
+        coverage html
