@@ -19,6 +19,16 @@ jobs:
     - name: Correr pruebas
       id: correr-pruebas
       run: python3 -m unittest -v tests/test_persona2.py
+    - name: Validar resultado con errores
+      if: ${{ failure() }}
+      env:
+        MENSAJE_ERROR: Una o varias pruebas fallaron
+      run: echo "::set-output name=respuesta::${MENSAJE_ERROR}"
+    - name: Validar resultado sin errores
+      if: ${{ success() }}
+      env:
+        MENSAJE_EXITO: Todas las pruebas fueron exitosas
+      run: echo "::set-output name=respuesta::${MENSAJE_EXITO}"
     - name: Coverage
       id: correr-coverage
       run: |
